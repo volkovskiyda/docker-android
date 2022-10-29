@@ -1,23 +1,36 @@
 ## Android Docker Image
 
-> ### Android SDK 31
+> ### Android 33
+> ### Android emulator
 > ### Fastlane
-> ### Based on [androidsdk/android-31](https://github.com/docker-android-sdk/android-31)
+> ### Based on [mindrunner/docker-android-sdk](https://github.com/mindrunner/docker-android-sdk)
 
 ### **Installed Packages**
 ```bash
 sdkmanager --list
 ```
 
-  Path                                        | Version | Description                                | Location                                   
-  -------                                     | ------- | -------                                    | -------                                    
-  build-tools;32.0.0                          | 32.0.0  | Android SDK Build-Tools 32                 | build-tools/32.0.0                         
-  cmdline-tools;latest                        | 7.0     | Android SDK Command-line Tools (latest)    | cmdline-tools/latest                       
-  emulator                                    | 31.2.10 | Android Emulator                           | emulator                                   
-  patcher;v4                                  | 1       | SDK Patch Applier v4                       | patcher/v4                                 
-  platform-tools                              | 33.0.2  | Android SDK Platform-Tools                 | platform-tools                             
-  platforms;android-31                        | 1       | Android SDK Platform 31                    | platforms/android-31                       
-  system-images;android-31;google_apis;x86_64 | 10      | Google APIs Intel x86 Atom_64 System Image | system-images/android-31/google_apis/x86_64
+Path                                                                              | Version      | Description                                | Location
+-------                                                                           | -------      | -------                                    | -------
+build-tools;33.0.0                                                                | 33.0.0       | Android SDK Build-Tools 33                 | build-tools/33.0.0
+emulator                                                                          | 31.3.13      | Android Emulator                           | emulator
+extras;android;m2repository                                                       | 47.0.0       | Android Support Repository                 | extras/android/m2repository
+extras;google;auto                                                                | 2.0          | Android Auto Desktop Head Unit Emulator    | extras/google/auto
+extras;google;google_play_services                                                | 49           | Google Play services                       | extras/google/google_play_services
+extras;google;instantapps                                                         | 1.9.0        | Google Play Instant Development SDK        | extras/google/instantapps
+extras;google;m2repository                                                        | 58           | Google Repository                          | extras/google/m2repository
+extras;google;market_apk_expansion                                                | 1            | Google Play APK Expansion library          | extras/google/market_apk_expansion
+extras;google;market_licensing                                                    | 1            | Google Play Licensing Library              | extras/google/market_licensing
+extras;google;simulators                                                          | 1            | Android Auto API Simulators                | extras/google/simulators
+extras;google;webdriver                                                           | 2            | Google Web Driver                          | extras/google/webdriver
+extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2 | 1            | Solver for ConstraintLayout 1.0.2          | extras/m2repository/com/android/support/constraint/constraint-layout-solver/1.0.2
+extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2        | 1            | ConstraintLayout for Android 1.0.2         | extras/m2repository/com/android/support/constraint/constraint-layout/1.0.2
+ndk-bundle                                                                        | 22.1.7171670 | NDK                                        | ndk-bundle
+patcher;v4                                                                        | 1            | SDK Patch Applier v4                       | patcher/v4
+platform-tools                                                                    | 33.0.3       | Android SDK Platform-Tools                 | platform-tools
+platforms;android-33                                                              | 2            | Android SDK Platform 33                    | platforms/android-33
+system-images;android-33;google_apis;x86_64                                       | 6            | Google APIs Intel x86 Atom_64 System Image | system-images/android-33/google_apis/x86_64
+system-images;android-33;google_apis_playstore;x86_64                             | 6            | Google Play Intel x86 Atom_64 System Image | system-images/android-33/google_apis_playstore/x86_64
 
 ### **Pull image from DockerHub:**
 ```bash
@@ -26,7 +39,14 @@ docker pull ghcr.io/volkovskiyda/android
 
 ### **Run container from DockerHub image:**
 ```bash
-docker run --rm -it ghcr.io/volkovskiyda/android
+docker run --rm -it --device /dev/kvm --network host ghcr.io/volkovskiyda/android
+```
+
+### **Create and run android emulator:**
+```bash
+echo no | avdmanager create avd -n android33_api --abi google_apis/x86_64 -k "system-images;android-33;google_apis;x86_64" --sdcard 2048M
+emulator @android33_api -no-window -no-audio &
+adb devices
 ```
 
 ### **Debug bitbucket pipeline locally:**
