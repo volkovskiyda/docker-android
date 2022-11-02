@@ -53,6 +53,7 @@ RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y \
 RUN groupadd android && useradd -d /opt/android-sdk-linux -g android -u 1000 android
 
 COPY tools /opt/tools
+RUN chmod +x /opt/tools/*
 
 COPY licenses /opt/licenses
 
@@ -67,9 +68,6 @@ RUN fastlane env
 RUN sdkmanager --list
 
 RUN sdkmanager "system-images;android-33;google_apis;x86_64"
-RUN sdkmanager "system-images;android-33;google_apis_playstore;x86_64"
-
 RUN echo no | avdmanager create avd -n android33_api --abi google_apis/x86_64 -k "system-images;android-33;google_apis;x86_64" --sdcard 2048M
-RUN echo no | avdmanager create avd -n android33_play --abi google_apis_playstore/x86_64 -k "system-images;android-33;google_apis_playstore;x86_64" --sdcard 2048M
 
 CMD /bin/bash
