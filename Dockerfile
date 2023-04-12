@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 LABEL org.opencontainers.image.source=https://github.com/volkovskiyda/docker-android
 
@@ -30,18 +30,13 @@ RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y \
   expect \
   git \
   make \
-  libc6:i386 \
-  libgcc1:i386 \
-  libncurses5:i386 \
-  libstdc++6:i386 \
-  zlib1g:i386 \
-  openjdk-11-jdk \
+  libarchive-tools \
+  openjdk-17-jdk \
   wget \
   unzip \
   vim \
   nano \
   locales \
-  bsdtar \
   g++ \
   build-essential \
   ruby \

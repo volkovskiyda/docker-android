@@ -13,7 +13,7 @@ sdkmanager --list
 Path                                                                              | Version      | Description                                | Location
 -------                                                                           | -------      | -------                                    | -------
 build-tools;33.0.0                                                                | 33.0.0       | Android SDK Build-Tools 33                 | build-tools/33.0.0
-emulator                                                                          | 31.3.13      | Android Emulator                           | emulator
+emulator                                                                          | 32.1.12      | Android Emulator                           | emulator
 extras;android;m2repository                                                       | 47.0.0       | Android Support Repository                 | extras/android/m2repository
 extras;google;auto                                                                | 2.0          | Android Auto Desktop Head Unit Emulator    | extras/google/auto
 extras;google;google_play_services                                                | 49           | Google Play services                       | extras/google/google_play_services
@@ -21,9 +21,9 @@ extras;google;instantapps                                                       
 extras;google;m2repository                                                        | 58           | Google Repository                          | extras/google/m2repository
 ndk-bundle                                                                        | 22.1.7171670 | NDK                                        | ndk-bundle
 patcher;v4                                                                        | 1            | SDK Patch Applier v4                       | patcher/v4
-platform-tools                                                                    | 33.0.3       | Android SDK Platform-Tools                 | platform-tools
+platform-tools                                                                    | 34.0.1       | Android SDK Platform-Tools                 | platform-tools
 platforms;android-33                                                              | 2            | Android SDK Platform 33                    | platforms/android-33
-system-images;android-33;google_apis;x86_64                                       | 6            | Google APIs Intel x86 Atom_64 System Image | system-images/android-33/google_apis/x86_64
+system-images;android-33;google_apis;x86_64                                       | 9            | Google APIs Intel x86 Atom_64 System Image | system-images/android-33/google_apis/x86_64
 
 ### **Pull image from DockerHub:**
 ```bash

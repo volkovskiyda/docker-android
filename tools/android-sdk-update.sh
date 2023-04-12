@@ -4,7 +4,7 @@ mkdir -p /opt/android-sdk-linux/bin/
 cp /opt/tools/android-env.sh /opt/android-sdk-linux/bin/
 source /opt/android-sdk-linux/bin/android-env.sh
 
-commandline_tools=8512546
+commandline_tools=9477386
 built_in_sdk=1
 
 if [ $# -ge 0 ] && [ "$1" == "lazy-dl" ]
