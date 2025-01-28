@@ -1,18 +1,19 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 LABEL org.opencontainers.image.source=https://github.com/volkovskiyda/docker-android
 
-ENV ANDROID_SDK       /opt/android-sdk-linux
-ENV ANDROID_SDK_HOME  ${ANDROID_SDK}
-ENV ANDROID_SDK_ROOT  ${ANDROID_SDK}
-ENV ANDROID_HOME      ${ANDROID_SDK}
+ENV ANDROID_HOME       /opt/android-sdk-linux
+ENV ANDROID_SDK_HOME  ${ANDROID_HOME}
+ENV ANDROID_SDK_ROOT  ${ANDROID_HOME}
+ENV ANDROID_SDK       ${ANDROID_HOME}
 
-ENV PATH "${PATH}:${ANDROID_SDK}/cmdline-tools/latest/bin"
-ENV PATH "${PATH}:${ANDROID_SDK}/tools/bin"
-ENV PATH "${PATH}:${ANDROID_SDK}/build-tools/33.0.0"
-ENV PATH "${PATH}:${ANDROID_SDK}/platform-tools"
-ENV PATH "${PATH}:${ANDROID_SDK}/emulator"
-ENV PATH "${PATH}:${ANDROID_SDK}/bin"
+ENV PATH "${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin"
+ENV PATH "${PATH}:${ANDROID_HOME}/tools/bin"
+ENV PATH "${PATH}:${ANDROID_HOME}/build-tools/34.0.0"
+ENV PATH "${PATH}:${ANDROID_HOME}/platform-tools"
+ENV PATH "${PATH}:${ANDROID_HOME}/emulator"
+ENV PATH "${PATH}:${ANDROID_HOME}/bin"
+ENV PATH "${PATH}:/opt/tools"
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -37,6 +38,8 @@ RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y \
   vim \
   nano \
   locales \
+  openssh-client \
+  screen \
   g++ \
   build-essential \
   ruby \
@@ -56,13 +59,14 @@ WORKDIR /opt/android-sdk-linux
 
 RUN /opt/tools/entrypoint.sh built-in
 
-RUN gem update --system && gem install rake bundler gem install fastlane -NV; exit 0
+RUN gem update --system; exit 0
+RUN gem install rake bundler fastlane -NV; exit 0
 
 RUN sdkmanager --update
 RUN fastlane env
 RUN sdkmanager --list
 
-RUN sdkmanager "system-images;android-33;google_apis;x86_64"
-RUN echo no | avdmanager create avd -n android33_api --abi google_apis/x86_64 -k "system-images;android-33;google_apis;x86_64" --sdcard 2048M
+RUN sdkmanager "system-images;android-35;google_apis;x86_64"
+RUN echo no | avdmanager create avd -n android_api --abi google_apis/x86_64 -k "system-images;android-35;google_apis;x86_64" --sdcard 2048M
 
 CMD /bin/bash
