@@ -63,10 +63,10 @@ RUN gem update --system; exit 0
 RUN gem install rake bundler fastlane -NV; exit 0
 
 RUN sdkmanager --update
-RUN fastlane env
-RUN sdkmanager --list
-
 RUN sdkmanager "system-images;android-35;google_apis;x86_64"
 RUN echo no | avdmanager create avd -n android_api --abi google_apis/x86_64 -k "system-images;android-35;google_apis;x86_64" --sdcard 2048M
+
+RUN fastlane env
+RUN sdkmanager --list
 
 CMD /bin/bash
