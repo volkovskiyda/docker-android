@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-export ANDROID_SDK=/opt/android-sdk-linux
-export ANDROID_SDK_ROOT=${ANDROID_SDK}
-export ANDROID_SDK_HOME=${ANDROID_SDK}
-export ANDROID_HOME=${ANDROID_SDK}
+export ANDROID_HOME=/opt/android-sdk-linux
+export ANDROID_SDK_ROOT=${ANDROID_HOME}
+export ANDROID_SDK_HOME=${ANDROID_HOME}
+export ANDROID_SDK=${ANDROID_HOME}
 
-export PATH=${PATH}:${ANDROID_SDK}/cmdline-tools/latest/bin:${ANDROID_SDK}/platform-tools:${ANDROID_SDK}/tools/bin:${ANDROID_SDK}/emulator:${ANDROID_SDK}/bin:${ANDROID_SDK}/cmdline-tools/tools/bin:${ANDROID_SDK}/build-tools/33.0.0:
+export PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/emulator:${ANDROID_HOME}/bin:
+
 
 function print_header() {
     figlet SBB CFF FFS
@@ -28,7 +29,7 @@ function help() {
 }
 
 function update_sdk() {
-    android-accept-licenses.sh "sdkmanager --update"
+    android-accept-licenses.sh "sdkmanager ${SDKMNGR_OPTS} --update"
 }
 
 function andep() {
@@ -36,7 +37,7 @@ function andep() {
         help
         return 1
     fi
-    android-accept-licenses.sh  "sdkmanager ${1}"
+    android-accept-licenses.sh  "sdkmanager ${SDKMNGR_OPTS} ${1}"
 }
 
 export -f help
