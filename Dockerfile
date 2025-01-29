@@ -9,7 +9,7 @@ ENV ANDROID_SDK       ${ANDROID_HOME}
 
 ENV PATH "${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin"
 ENV PATH "${PATH}:${ANDROID_HOME}/tools/bin"
-ENV PATH "${PATH}:${ANDROID_HOME}/build-tools/34.0.0"
+ENV PATH "${PATH}:${ANDROID_HOME}/build-tools/35.0.0"
 ENV PATH "${PATH}:${ANDROID_HOME}/platform-tools"
 ENV PATH "${PATH}:${ANDROID_HOME}/emulator"
 ENV PATH "${PATH}:${ANDROID_HOME}/bin"
@@ -64,7 +64,6 @@ RUN gem update --system; exit 0
 RUN gem install rake bundler fastlane -NV; exit 0
 
 RUN sdkmanager --update
-RUN sdkmanager "system-images;android-35;google_apis;x86_64"
 RUN echo no | avdmanager create avd -n android_api --abi google_apis/x86_64 -k "system-images;android-35;google_apis;x86_64" --sdcard 2048M
 
 RUN fastlane env
