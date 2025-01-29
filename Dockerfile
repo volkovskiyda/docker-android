@@ -30,6 +30,7 @@ RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y \
   curl \
   expect \
   git \
+  git-lfs \
   make \
   libarchive-tools \
   openjdk-17-jdk \
