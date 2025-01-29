@@ -33,7 +33,7 @@ RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y \
   git-lfs \
   make \
   libarchive-tools \
-  openjdk-17-jdk \
+  openjdk-21-jdk \
   wget \
   unzip \
   vim \
