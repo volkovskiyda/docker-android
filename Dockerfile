@@ -21,9 +21,9 @@ ENV LC_ALL    en_US.UTF-8
 ENV LANG      en_US.UTF-8
 ENV LANGUAGE  en_US.UTF-8
 
-ENV GRADLE_PATH /root/.gradle/gradle.properties
-
 RUN mkdir -p "/root/.gradle"
+COPY gradle.properties /root/.gradle/gradle.properties
+ENV GRADLE_PATH /root/.gradle/gradle.properties
 
 RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y \
   bash \
