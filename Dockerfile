@@ -1,71 +1,81 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 LABEL org.opencontainers.image.source=https://github.com/volkovskiyda/docker-android
 
-ENV ANDROID_HOME       /opt/android-sdk-linux
-ENV ANDROID_SDK_HOME  ${ANDROID_HOME}
-ENV ANDROID_SDK_ROOT  ${ANDROID_HOME}
-ENV ANDROID_SDK       ${ANDROID_HOME}
+ARG TARGETARCH
+ENV DEBIAN_FRONTEND=noninteractive
 
-ENV PATH "${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin"
-ENV PATH "${PATH}:${ANDROID_HOME}/tools/bin"
-ENV PATH "${PATH}:${ANDROID_HOME}/build-tools/35.0.0"
-ENV PATH "${PATH}:${ANDROID_HOME}/platform-tools"
-ENV PATH "${PATH}:${ANDROID_HOME}/emulator"
-ENV PATH "${PATH}:${ANDROID_HOME}/bin"
-ENV PATH "${PATH}:/opt/tools"
+# update
+RUN apt-get update && apt-get dist-upgrade -y
 
-ENV DEBIAN_FRONTEND noninteractive
+# install essential tools
+RUN apt-get install -y --no-install-recommends git git-lfs wget unzip bash screen nano curl build-essential locales && \
+    locale-gen en en_US en_US.UTF-8 && \
+    apt-get remove -y locales && apt-get autoremove -y
 
-ENV LC_ALL    en_US.UTF-8
-ENV LANG      en_US.UTF-8
-ENV LANGUAGE  en_US.UTF-8
+# install java
+ARG JDK_VERSION=17
+RUN apt-get install -y --no-install-recommends openjdk-${JDK_VERSION}-jdk
 
-RUN mkdir -p "/root/.gradle"
-COPY gradle.properties /root/.gradle/gradle.properties
-ENV GRADLE_PATH /root/.gradle/gradle.properties
+# install ruby
+RUN apt-get install -y --no-install-recommends ruby ruby-dev
 
-RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y \
-  bash \
-  curl \
-  expect \
-  git \
-  git-lfs \
-  make \
-  libarchive-tools \
-  openjdk-17-jdk \
-  wget \
-  unzip \
-  vim \
-  nano \
-  locales \
-  openssh-client \
-  screen \
-  g++ \
-  build-essential \
-  ruby \
-  ruby-dev \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+# clean
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd android && useradd -d /opt/android-sdk-linux -g android -u 1000 android
+# download and install Android SDK
+# https://developer.android.com/studio#command-line-tools-only
+ARG ANDROID_SDK_VERSION=11076708
+ENV ANDROID_HOME=/opt/android-sdk
+RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
+    wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip && \
+    unzip *tools*linux*.zip -d ${ANDROID_HOME}/cmdline-tools && \
+    mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/tools && \
+    rm *tools*linux*.zip
 
-COPY tools /opt/tools
-RUN chmod +x /opt/tools/*
+# set the environment variables
+ENV JAVA_HOME=/usr/lib/jvm/java-${JDK_VERSION}-openjdk-${TARGETARCH}
+ENV PATH=${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/emulator
+# WORKAROUND: for issue https://issuetracker.google.com/issues/37137213
+ENV LD_LIBRARY_PATH=${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib
+# patch emulator issue: Running as root without --no-sandbox is not supported. See https://crbug.com/638180.
+# https://doc.qt.io/qt-5/qtwebengine-platform-notes.html#sandboxing-support
+ENV QTWEBENGINE_DISABLE_SANDBOX=1
 
-COPY licenses /opt/licenses
+# accept the license agreements of the SDK components
+ADD license-accepter.sh /opt/
+RUN chmod +x /opt/license-accepter.sh && /opt/license-accepter.sh $ANDROID_HOME
 
-WORKDIR /opt/android-sdk-linux
+# install fastlane and tools
+ENV LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8
+RUN gem update
+RUN gem install rake bundler fastlane -NV
 
-RUN /opt/tools/entrypoint.sh built-in
+# install sdkmanager packages
+ARG ANDROID_API_LEVEL=35
+ARG ANDROID_BUILD_TOOLS_VERSION=35.0.1
+ARG ANDROID_GOOGLE_APIS=google_apis
+ARG ANDROID_ARCH=x86_64
+ARG ANDROID_SYSTEM_IMAGE=system-images;android-${ANDROID_API_LEVEL};${ANDROID_GOOGLE_APIS};${ANDROID_ARCH}
 
-RUN gem update --system; exit 0
-RUN gem install rake bundler fastlane -NV; exit 0
-
+RUN sdkmanager --licenses
 RUN sdkmanager --update
-RUN echo no | avdmanager create avd -n android_api --abi google_apis/x86_64 -k "system-images;android-35;google_apis;x86_64" --sdcard 2048M
+RUN sdkmanager "extras;android;m2repository"
+RUN sdkmanager "extras;google;google_play_services"
+RUN sdkmanager "ndk-bundle"
+RUN sdkmanager "platform-tools"
+RUN sdkmanager "platforms;android-${ANDROID_API_LEVEL}"
+RUN sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}"
+RUN sdkmanager "emulator" "${ANDROID_SYSTEM_IMAGE}" ; exit 0
 
+# install emulator on x86_64
+RUN echo "no" | avdmanager create avd -n android_api --abi "${ANDROID_GOOGLE_APIS}/${ANDROID_ARCH}" -k "${ANDROID_SYSTEM_IMAGE}" --sdcard 1024M ; exit 0
+
+# output installed versions
+RUN apt list --installed
+RUN java --version
+RUN cat $ANDROID_HOME/cmdline-tools/tools/source.properties
 RUN fastlane env
 RUN sdkmanager --list
 
