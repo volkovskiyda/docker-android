@@ -64,8 +64,8 @@ RUN sdkmanager --licenses
 RUN sdkmanager --update
 RUN sdkmanager "extras;android;m2repository"
 RUN sdkmanager "extras;google;google_play_services"
-RUN sdkmanager "ndk-bundle"
 RUN sdkmanager "platform-tools"
+RUN sdkmanager "ndk-bundle" ; exit 0
 RUN sdkmanager "platforms;android-${ANDROID_API_LEVEL}"
 RUN sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}"
 RUN sdkmanager "emulator" "${ANDROID_SYSTEM_IMAGE}" ; exit 0
