@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get dist-upgrade -y
 
 # install essential tools
-RUN apt-get install -y --no-install-recommends git git-lfs wget unzip bash screen nano curl build-essential locales && \
+RUN apt-get install -y --no-install-recommends git git-lfs wget unzip bash screen nano curl build-essential locales openssh-client && \
     locale-gen en en_US en_US.UTF-8 && \
     apt-get remove -y locales && apt-get autoremove -y
 
