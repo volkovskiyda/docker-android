@@ -49,6 +49,8 @@ RUN chmod +x /opt/license-accepter.sh && /opt/license-accepter.sh $ANDROID_HOME
 # install fastlane and tools
 ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
+RUN echo "LC_ALL=${LC_ALL}" > /etc/environment
+RUN echo "LANG=${LANG}" > /etc/environment
 RUN gem update
 RUN gem install rake bundler fastlane -NV
 
@@ -58,7 +60,6 @@ ARG ANDROID_BUILD_TOOLS_VERSION=35.0.1
 ARG ANDROID_GOOGLE_APIS=google_apis
 ARG ANDROID_ARCH=x86_64
 ARG ANDROID_SYSTEM_IMAGE=system-images;android-${ANDROID_API_LEVEL};${ANDROID_GOOGLE_APIS};${ANDROID_ARCH}
-
 RUN sdkmanager --licenses
 RUN sdkmanager --update
 RUN sdkmanager "extras;android;m2repository"
