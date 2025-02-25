@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [ amd64, arm64 ]
+        arch: [ amd64, arm64 ]
     steps:
     - 
       name: Checkout
@@ -58,7 +58,7 @@ jobs:
       name: Build and push
       uses: docker/build-push-action@v3
       with:
-        platforms: ${{ matrix.platform }}
+        platforms: linux/${{ matrix.arch }}
         push: true
         tags: |
           ${{ env.repository }}:${{ steps.date.outputs.date }},
