@@ -3,17 +3,15 @@
 > ### Android 35
 > ### Android emulator
 > ### Fastlane
-> ### Based on
-> - [mindrunner/docker-android-sdk](https://github.com/mindrunner/docker-android-sdk)
-> - [thyrlian/AndroidSDK](https://github.com/thyrlian/AndroidSDK)
+> ### Based on [thyrlian/AndroidSDK](https://github.com/thyrlian/AndroidSDK)
 
 ### **Installed Packages**
 ```bash
 sdkmanager --list
 ```
-
+Installed packages:
   Path                                        | Version      | Description                                | Location                                   
-  -------                                     | -------      | -------                                    | -------                                                        
+  -------                                     | -------      | -------                                    | -------                                    
   build-tools;35.0.1                          | 35.0.1       | Android SDK Build-Tools 35.0.1             | build-tools/35.0.1                         
   emulator                                    | 35.3.12      | Android Emulator                           | emulator                                   
   extras;android;m2repository                 | 47.0.0       | Android Support Repository                 | extras/android/m2repository                
